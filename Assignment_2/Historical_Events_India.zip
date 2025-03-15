@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Events of India</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #f6d365, #fda085);
+        }
+
+        header {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+        }
+
+        .events-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .event-card {
+            width: 300px;
+            background-color: white;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .event-card:hover {
+            transform: scale(1.05);
+        }
+
+        .event-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ff6f61;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        Historical Events of India
+    </header>
+
+    <div class="events-container" id="events-container"></div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title"></h2>
+            <img id="event-img" class="event-img" src="" alt="Event Image">
+            <p id="modal-description"></p>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Historical Events of India
+    </footer>
+
+    <script>
+        const events = [
+            { title: "Indus Valley Civilization (3300 BCE - 1300 BCE)", img: "images/indus.jpg", description: "One of the world's oldest urban civilizations, known for advanced architecture, drainage systems, and trade networks." },
+            { title: "Mauryan Empire (322 BCE - 185 BCE)", img: "images/maurya.jpg", description: "A powerful empire under rulers like Chandragupta Maurya and Ashoka, known for political unity and the spread of Buddhism." },
+            { title: "Gupta Empire (319 CE - 550 CE)", img: "images/gupta.jpg", description: "The golden age of Indian culture, science, and mathematics, with advancements in astronomy and literature." },
+            { title: "Delhi Sultanate (1206 CE - 1526 CE)", img: "images/delhi_sultanate.jpg", description: "A period of Muslim rule that introduced new architectural styles and administrative systems." },
+            { title: "Mughal Empire (1526 CE - 1857 CE)", img: "images/mughal.jpg", description: "A culturally rich era known for architectural marvels like the Taj Mahal and significant economic growth." },
+            { title: "Battle of Plassey (1757 CE)", img: "images/plassey.jpg", description: "A pivotal battle that marked the beginning of British colonial rule in India." },
+            { title: "Indian Rebellion of 1857", img: "images/rebellion.jpg", description: "A major revolt against British rule, also known as the First War of Indian Independence." },
+            { title: "Formation of Indian National Congress (1885)", img: "images/inc.jpg", description: "A political party that played a crucial role in the struggle for Indian independence." },
+            { title: "Jallianwala Bagh Massacre (1919)", img: "images/jallianwala.jpg", description: "A brutal incident where British troops fired on peaceful protestors, killing hundreds." },
+            { title: "Quit India Movement (1942)", img: "images/quit.jpg", description: "A mass protest led by Mahatma Gandhi, demanding an end to British rule." },
+            { title: "Indian Independence (1947)", img: "images/independence.jpg", description: "The end of British colonial rule and the partition of India and Pakistan." },
+            { title: "Constitution of India (1950)", img: "images/constitution.jpg", description: "The adoption of the Indian Constitution, establishing India as a sovereign republic." },
+            { title: "Green Revolution (1960s - 1970s)", img: "images/green.jpg", description: "A period of agricultural innovation that significantly increased food production." },
+            { title: "Pokhran Nuclear Test (1974)", img: "images/pokhran.jpg", description: "India's first successful nuclear test, establishing its nuclear capability." },
+            { title: "Kargil War (1999)", img: "images/kargil.jpg", description: "A conflict between India and Pakistan over the Kargil region." },
+            { title: "Chandrayaan-1 Mission (2008)", img: "images/chandrayaan.jpg", description: "India's first lunar probe that discovered water on the moon." },
+            { title: "Abrogation of Article 370 (2019)", img: "images/article370.jpg", description: "The removal of Jammu and Kashmir's special status, integrating it fully with India." }
+        ];
+
+        const container = document.getElementById('events-container');
+
+        events.forEach(event => {
+            const eventCard = document.createElement('div');
+            eventCard.className = 'event-card';
+            eventCard.innerHTML = `
+                <img class="event-img" src="${event.img}" alt="${event.title}">
+                <div class="event-title">${event.title}</div>
+            `;
+            eventCard.addEventListener('click', () => showDetails(event.title, event.description, event.img));
+            container.appendChild(eventCard);
+        });
+
+        function showDetails(title, description, img) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-description').innerText = description;
+            document.getElementById('event-img').src = img;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
